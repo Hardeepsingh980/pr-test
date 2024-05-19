@@ -1,8 +1,9 @@
 from llmware.prompts import Prompt
+import os
 
 class ReviewerAgent:
     def __init__(self):
-        self.prompt = Prompt().load_model('gpt-3.5-turbo')
+        self.prompt = Prompt().load_model('gpt-3.5-turbo', api_key=os.environ['OPENAI_API_KEY'])
         self.help_commands = {
             '/help': 'List all available commands.',
             '/explain': 'Explain the current code context',
@@ -32,7 +33,7 @@ class ReviewerAgent:
             prompt=prompt,
             context=context
         )
-        return self.return_response(response)['llm_response']
+        return self.return_response(response['llm_response'])
     
     def create_comment(self, comment, diff, status, comment_history, pr_title, pr_description):
         if comment.startswith('/'):
