@@ -8,7 +8,7 @@ class ToDoList:
 
     def list_tasks(self):
         if not self.tasks:
-            print("No tasks to show!")
+            print("task to show")
         for i, task in enumerate(self.tasks, 1):
             print(f"{i}. {task}")
 
