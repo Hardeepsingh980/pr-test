@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r mergemate/requirements.txt 
       - name: Review PR
-        run: python mergemate/scripts/github/pr_review.py
+        run: python -m mergemate.scripts.github.pr_review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r mergemate/requirements.txt 
       - name: Handle Comment
-        run: python mergemate/scripts/github/comment_handler.py
+        run: python -m mergemate.scripts.github.comment_handler
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
