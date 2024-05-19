@@ -1,0 +1,4 @@
+Explain the following code changes in detail using Markdown format:
+- File Diff: {file_diff}
+
+Please analyze the changes line by line and provide an explanation for each modification, addition, or deletion. Use a clear and concise Markdown format for better readability. Highlight what each part of the code does, why certain changes were made, and how they affect the overall functionality of the code. Include any implications or improvements brought by these changes.

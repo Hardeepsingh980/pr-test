@@ -5,42 +5,77 @@ class ReviewerAgent:
         self.prompt = Prompt().load_model('gpt-3.5-turbo')
         self.help_commands = {
             '/help': 'List all available commands.',
-            '/explain': 'Explain the current code context or a specific part.',
+            '/explain': 'Explain the current code context',
             '/status': 'Get the current status of the PR.'
         }
 
-    def run(self, prompt, context=None):
+        review_prompt = open('mergemate/prompts/create_review.txt', 'r')
+        self.review_prompt = review_prompt.read()
+        review_prompt.close()
+
+        explain_code_prompt = open('mergemate/prompts/explain_code.txt', 'r')
+        self.explain_code_prompt = explain_code_prompt.read()
+        explain_code_prompt.close()
+
+        answer_comment_prompt = open('mergemate/prompts/answer_comment.txt', 'r')
+        self.answer_comment_prompt = answer_comment_prompt.read()
+        answer_comment_prompt.close()
+        
+
+    def return_response(self, response):
         header = ":sparkles: **MergeMate Review** :sparkles:\n\n"
         footer = "\n\n:bulb: *Use `/help` to list all available commands.* :bulb:"
+        return header + response + footer
+
+    def run(self, prompt, context=None):
         response = self.prompt.prompt_main(
             prompt=prompt,
             context=context
         )
-        return header + response + footer
+        return self.return_response(response)
     
-    def create_comment(self, comment, event_data):
+    def create_comment(self, comment, diff, status, comment_history, pr_title, pr_description):
         if comment.startswith('/'):
-            return self.handle_command(comment, event_data)
+            return self.handle_command(comment, diff, status)
         else:
-            prompt = f"Answer the following: {comment}"
-            context = event_data
+            prompt = self.answer_comment_prompt.format(
+                comment=comment,
+                file_diff=diff,
+                status=status,
+                comment_history=comment_history,
+                title=pr_title,
+                description=pr_description
+            )
+            
+            context = diff
             return self.run(prompt, context)
 
-    def handle_command(self, command, event_data):
+    def handle_command(self, command, diff, status):
         if command in self.help_commands:
             if command == '/help':
-                return '\n'.join([f"{k}: {v}" for k, v in self.help_commands.items()])
+                return self.return_response('\n'.join([f"{k}: {v}" for k, v in self.help_commands.items()]))
             elif command == '/explain':
-                return self.explain_code(event_data)
+                return self.explain_code(diff)
             elif command == '/status':
-                return "The PR is currently being reviewed. Changes requested: 2. Comments: 5."
+                return self.give_status(status)
         else:
-            return "Command not recognized. Use `/help` to see available commands."
+            return self.return_response("Command not recognized. Use `/help` to see available commands.")
 
-    def create_review(self, pr_details):
-        prompt = f"Review the following code changes and provide suggestions: {pr_details['title']} - {pr_details['description']}\n\n"
-        return self.run(prompt)
+    def create_review(self, title, description, diff):
+        print("Creating review...")
+        prompt = self.review_prompt.format(
+            title=title,
+            description=description,
+            file_diff=diff
+        )
+        return self.run(prompt, context=diff)
 
-    def explain_code(self, event_data):
-        prompt = f"Explain the following code in detail:\n\n{event_data['code_snippet']}"
-        return self.run(prompt)
+    def explain_code(self, diff):
+        print("Explaining code...")
+        prompt = self.explain_code_prompt.format(
+            file_diff=diff
+        )
+        return self.run(prompt, context=diff)
+    
+    def give_status(self, status):
+        return self.return_response(f"The current status of the PR is: {status}")

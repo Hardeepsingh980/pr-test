@@ -9,16 +9,13 @@ class PrReviewHandler:
         self.gh = GithubProvider()
         self.agent = ReviewerAgent()
         with open(os.getenv('GITHUB_EVENT_PATH')) as event_file:
-            self.event_data = json.load(event_file)
-            print("PR event data loaded:", self.event_data)
-        
+            self.event_data = json.load(event_file)            
+            
     def run(self):
-        pr_details = {
-            'title': self.event_data['pull_request']['title'],
-            'description': self.event_data['pull_request']['body'],
-            # 'code_diff': self.gh.get_pr_diff(self.event_data['pull_request']['number'])
-        }
-        review_response = self.agent.create_review(pr_details)
+        diff = self.gh.get_diff(self.event_data)
+        title = self.event_data['pull_request']['title']
+        description = self.event_data['pull_request']['body']
+        review_response = self.agent.create_review(title, description, diff)
         print("Review Response:", review_response)
         self.gh.create_comment(review_response, self.event_data)
 
