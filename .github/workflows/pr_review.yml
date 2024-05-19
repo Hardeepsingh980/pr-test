@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.9'
       - name: Install dependencies
-        run: pip install -r mergemate/requirements.txt 
+        run: pip install mergemate
       - name: Review PR
         run: python -m mergemate.scripts.github.pr_review
         env:
@@ -37,7 +37,7 @@ jobs:
         with:
           python-version: '3.9'
       - name: Install dependencies
-        run: pip install -r mergemate/requirements.txt 
+        run: pip install mergemate
       - name: Handle Comment
         run: python -m mergemate.scripts.github.comment_handler
         env:
