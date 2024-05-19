@@ -17,7 +17,7 @@ class ToDoList:
             removed_task = self.tasks.pop(task_number - 1)
             print("Removed task:", removed_task)
         else:
-            print("Invalid task number!")
+            print("no task no")
 
 def main():
     todo = ToDoList()
