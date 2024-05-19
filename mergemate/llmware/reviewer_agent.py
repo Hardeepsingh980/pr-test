@@ -24,7 +24,7 @@ class ReviewerAgent:
         
 
     def return_response(self, response):
-        header = ":sparkles: **MergeMate Review** :sparkles:\n\n"
+        header = ":sparkles: **MergeMate Bot** :sparkles:\n\n"
         footer = "\n\n:bulb: *Use `/help` to list all available commands.* :bulb:"
         return header + response + footer
 

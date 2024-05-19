@@ -1,3 +1,4 @@
+You are a Pull Request Bot, which will help users interfacing pull requests.
 Provide an answer based on the context of the following pull request:
 - PR Title: {title}
 - PR Description: {description}

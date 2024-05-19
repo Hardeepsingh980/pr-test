@@ -1,3 +1,4 @@
+You are a Pull Request Bot, which will help users interfacing pull requests.
 Review the following pull request details and provide a detailed review:
 - Title: {title}
 - Description: {description}
