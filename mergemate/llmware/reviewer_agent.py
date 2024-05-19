@@ -7,7 +7,8 @@ class ReviewerAgent:
         self.help_commands = {
             '/help': 'List all available commands.',
             '/explain': 'Explain the current code context',
-            '/status': 'Get the current status of the PR.'
+            '/status': 'Get the current status of the PR.',
+            '/ask': 'Ask a question about the the PR.'
         }
 
         review_prompt = open('mergemate/prompts/create_review.txt', 'r')
@@ -37,30 +38,19 @@ class ReviewerAgent:
     
     def create_comment(self, comment, diff, status, comment_history, pr_title, pr_description):
         if comment.startswith('/'):
-            return self.handle_command(comment, diff, status)
-        else:
-            prompt = self.answer_comment_prompt.format(
-                comment=comment,
-                file_diff=diff,
-                status=status,
-                comment_history=comment_history,
-                title=pr_title,
-                description=pr_description
-            )
-            
-            context = diff
-            return self.run(prompt, context)
-
-    def handle_command(self, command, diff, status):
-        if command in self.help_commands:
+            command = comment.split(' ')[0]
             if command == '/help':
                 return self.return_response('\n'.join([f"{k}: {v}" for k, v in self.help_commands.items()]))
             elif command == '/explain':
                 return self.explain_code(diff)
             elif command == '/status':
                 return self.give_status(status)
+            elif command == '/ask':
+                return self.ask(comment, diff, status, comment_history, pr_title, pr_description)    
+            else:
+                return self.return_response("Command not recognized. Use `/help` to see available commands.")
         else:
-            return self.return_response("Command not recognized. Use `/help` to see available commands.")
+            return "not a command"
 
     def create_review(self, title, description, diff):
         print("Creating review...")
@@ -80,3 +70,17 @@ class ReviewerAgent:
     
     def give_status(self, status):
         return self.return_response(f"The current status of the PR is: {status}")
+    
+    def ask(self, comment, diff, status, comment_history, pr_title, pr_description):
+        print("Asking question...")
+        prompt = self.answer_comment_prompt.format(
+            comment=comment,
+            file_diff=diff,
+            status=status,
+            comment_history=comment_history,
+            title=pr_title,
+            description=pr_description
+        )
+        
+        context = diff
+        return self.run(prompt, context)
