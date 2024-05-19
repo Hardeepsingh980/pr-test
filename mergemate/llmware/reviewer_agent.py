@@ -32,7 +32,7 @@ class ReviewerAgent:
             prompt=prompt,
             context=context
         )
-        return self.return_response(response)
+        return self.return_response(response)['llm_response']
     
     def create_comment(self, comment, diff, status, comment_history, pr_title, pr_description):
         if comment.startswith('/'):
