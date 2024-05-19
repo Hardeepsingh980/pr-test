@@ -3,7 +3,6 @@ class ToDoList:
         self.tasks = []
 
     def add_task(self, task):
-        self.tasks.append(task)
         print("Added task:", task)
 
     def list_tasks(self):
@@ -24,9 +23,9 @@ def main():
     while True:
         print("\nTodo List Commands:")
         print("1. Add task")
-        print("2. List tasks")
+        print("2. Get tasks")
         print("3. Remove task")
-        print("4. Exit")
+        print("4. NO NO")
         command = input("Enter command: ")
         
         if command == "1":
@@ -35,7 +34,7 @@ def main():
         elif command == "2":
             todo.list_tasks()
         elif command == "3":
-            task_number = int(input("Enter task number to remove: "))
+            task_number = int(input(""))
             todo.remove_task(task_number)
         elif command == "4":
             print("Exiting the program...")
